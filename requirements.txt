@@ -1,0 +1,6 @@
+pytube
+openai-whisper
+streamlit
+requests
+datetime
+moviepy
