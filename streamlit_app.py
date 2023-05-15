@@ -100,6 +100,7 @@ def yt_app():
         con = st.container()
         with con:
             con.write("동영상(MP4) 내려받기")
+            # 1. MP4 내려받기
             if st.button("🎬 동영상(MP4)"):
                 with st.spinner("Downloading mp4..."):
                     video_file_content, video_file_name = download_mp4(yt_url)
@@ -125,7 +126,7 @@ def yt_app():
             con.write("스크립트(TXT) 내려받기")
             # 3. 스크립트 내려받기
             if st.button("📝 스크립트(TXT)"):
-                st.write("model : ", whisper_model)
+                # st.write("model : ", whisper_model)
                 print("whisper model : ", whisper_model)
                 # 스크립트 추출 실행
                 with st.spinner("먼저 오디오를 추출합니다..."):
@@ -133,7 +134,7 @@ def yt_app():
                     audio_file, audio_file_path = download_mp3_from_mp4(yt_url)
                     st.audio(audio_file, format='audio/mp3')
                     st.write("오디오 파일을 저장하려면 메뉴(⋮)를 누르고 '다운로드'를 선택하세요. 🔊")
-                with st.spinner("스크립트를 추출합니다..."):
+                with st.spinner("스크립트를 추출합니다. 시간이 좀 걸려요... 😥"):
                     print("스크립트 추출 시작")
                     model = whisper.load_model(whisper_model)
                     result = model.transcribe(audio_file_path)
@@ -151,6 +152,7 @@ def yt_app():
                         )
     else:
         pass
+#     st.stop()
 # Main
 if __name__ == "__main__":
     yt_app()
