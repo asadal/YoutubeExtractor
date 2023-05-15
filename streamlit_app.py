@@ -99,14 +99,14 @@ def yt_app():
     if yt_url is not None:
         con = st.container()
         with con:
-            con.write("동영상(MP4) 내려받기")
+            con.write("🎬 동영상(MP4) 내려받기")
             if st.button("동영상(MP4)"):
                 with st.spinner("Downloading mp4..."):
                     video_file_content, video_file_name = download_mp4(yt_url)
                     st.success("유튜브 동영상 추출 완료!")
                     st.video(video_file_content, format='video/mp4')
                     st.download_button(
-                        label='Download Video', 
+                        label='🎬 동영상 내려받기', 
                         data=video_file_content, 
                         file_name=video_file_name, 
                         mime='video/mp4'
@@ -115,16 +115,16 @@ def yt_app():
         with con:
             con.write("오디오(MP3) 내려받기")
             # 2. MP3 내려받기
-            if st.button("오디오(MP3)"):
+            if st.button("🔊 오디오(MP3)"):
                 with st.spinner("Downloading mp3..."):
                     audio_file, audio_file_path = download_mp3_from_mp4(yt_url)
                     st.audio(audio_file, format='audio/mp3')
-                    st.write("오디오 파일을 저장하려면 메뉴(⋮)를 누르고 '다운로드'를 선택하세요.")
+                    st.write("오디오 파일을 저장하려면 메뉴(⋮)를 누르고 '다운로드'를 선택하세요. 🔊")
         
         with con:
             con.write("스크립트(TXT) 내려받기")
             # 3. 스크립트 내려받기
-            if st.button("스크립트(TXT)"):
+            if st.button("📝 스크립트(TXT)"):
                 st.write("model : ", whisper_model)
                 print("whisper model : ", whisper_model)
                 # 스크립트 추출 실행
@@ -132,7 +132,7 @@ def yt_app():
                     print("오디오 추출 시작")
                     audio_file, audio_file_path = download_mp3_from_mp4(yt_url)
                     st.audio(audio_file, format='audio/mp3')
-                    st.write("오디오 파일을 저장하려면 메뉴(⋮)를 누르고 '다운로드'를 선택하세요.")
+                    st.write("오디오 파일을 저장하려면 메뉴(⋮)를 누르고 '다운로드'를 선택하세요. 🔊")
                 with st.spinner("스크립트를 추출합니다..."):
                     print("스크립트 추출 시작")
                     model = whisper.load_model(whisper_model)
@@ -144,7 +144,7 @@ def yt_app():
                 st.write(script)
                 file_bite = script.encode('utf-8')
                 st.download_button(
-                        label="Download Script",
+                        label="📝 스크립트 저장하기",
                         data=file_bite,
                         file_name=script_file_name,
                         mime='text/plain'
