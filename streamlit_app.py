@@ -17,6 +17,8 @@ datetime_utc = datetime.utcnow()
 datetime_kst = datetime_utc + timedelta(hours=9)
 today = datetime_kst.today().date().strftime('%Y.%m.%d')
 
+# whisper model ('tiny', 'base', 'small', 'medium', 'large')
+whisper_model = 'small' 
 
 # 임시 폴더 생성
 def create_temp_dir():
@@ -123,11 +125,10 @@ def yt_app():
             con.write("스크립트(TXT) 내려받기")
             # 3. 스크립트 내려받기
             if st.button("스크립트(TXT)"):
-                whisper_model = 'medium'
                 st.write("model : ", whisper_model)
                 print("whisper model : ", whisper_model)
                 # 스크립트 추출 실행
-                with st.spinner("오디오를 추출합니다..."):
+                with st.spinner("먼저 오디오를 추출합니다..."):
                     print("오디오 추출 시작")
                     audio_file, audio_file_path = download_mp3_from_mp4(yt_url)
                     st.audio(audio_file, format='audio/mp3')
