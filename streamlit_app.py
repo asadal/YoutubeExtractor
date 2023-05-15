@@ -111,7 +111,7 @@ def yt_app():
                         video_byte = download_mp4(yt)
                         st.success("유튜브 동영상 추출 완료!")
                         st.download_button(
-                            label='🎬 동영상 내려받기', 
+                            label='📥 Download MP4 File 🎬', 
                             data=video_byte, 
                             file_name=video_file_name, 
                             mime='video/mp4'
@@ -126,7 +126,7 @@ def yt_app():
                         st.audio(audio_file, format='audio/mp3')
                         st.write("오디오 파일을 저장하려면 메뉴(⋮)를 누르고 '다운로드'를 선택하세요. 🔊")
                         st.download_button(
-                            label='🔊 Download MP3 File',
+                            label='📥 Download MP3 File 🔊',
                             data=audio_file,
                             file_name=audio_file_name,
                             mime='audio/mp3'
@@ -154,7 +154,7 @@ def yt_app():
                     st.write(script)
                     file_bite = script.encode('utf-8')
                     st.download_button(
-                            label="📝 Download TXT File",
+                            label="📥 Download TXT File 📝",
                             data=file_bite,
                             file_name=script_file_name,
                             mime='text/plain'
