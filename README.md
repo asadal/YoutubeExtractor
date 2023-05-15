@@ -1,4 +1,4 @@
-# Youtube :blue[Video] | :red[Audio] | :green[Script] Extractor
+# Youtube Video | Audio | Script Extractor
 
 ## 유튜브 파일 변환 & 다운로드
 
