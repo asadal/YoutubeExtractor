@@ -102,7 +102,7 @@ def yt_app():
                 with st.spinner("Downloading mp4..."):
                     video_file_content, video_file_name = download_mp4(yt_url)
                     st.success("유튜브 동영상 추출 완료!")
-                    st.video(video_file_content, format='video/mp4', file_name=video_file_name)
+                    st.video(video_file_content, format='video/mp4')
                     st.download_button(
                         label='Download Video', 
                         data=video_file_content, 
