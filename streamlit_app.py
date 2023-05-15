@@ -120,7 +120,7 @@ def yt_app():
             con.write("스크립트(TXT) 내려받기")
             # 3. 스크립트 내려받기
             if st.button("스크립트(TXT)"):
-                whisper_model = 'base'
+                whisper_model = 'medium'
                 st.write("model : ", whisper_model)
                 print("whisper model : ", whisper_model)
                 # 스크립트 추출 실행
