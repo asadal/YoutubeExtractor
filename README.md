@@ -8,6 +8,5 @@
 * 개인 용도로 초기 기능만 구헌한 페이지입니다. 아직은 수정·보완할 부분이 많습니다.
 
 
-
-### [주의] `streamlit_app.py` 파일을 열고 `BASE_FOLDER` 경로를 자신이 내려받고자 하는 폴더로 변경한 뒤 사용하시기 바랍니다.
+### Demo : [YoutubeExtractor](https://asadal-youtube.streamlit.app/)
 
