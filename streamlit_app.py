@@ -30,31 +30,23 @@ def create_temp_dir():
     return temp_dir
 
 # 유튜브 동영상 다운로드
-def download_mp4(yt_url):
-    yt = YouTube(yt_url)
-    stream = yt.streams.get_highest_resolution()
+def download_mp4(ytb):
+    stream = ytb.streams.get_highest_resolution()
     print("stream : ", stream)
     print("stream.url : ", stream.url)
-    video_file_content = requests.get(stream.url).content
-    print("video_file_content_type : ", type(video_file_content))
-    video_file_name = f"{yt.title}.mp4"
-    return video_file_content, video_file_name
+    video_byte = requests.get(stream.url).content
+    return video_byte
 
 # mp3 추출 함수
-def download_mp3_from_mp4(yt_url):
-    yt = YouTube(yt_url)
-    stream = yt.streams.get_highest_resolution()
-    temp_dir = create_temp_dir()
-    stream.download(temp_dir, filename=f"{yt.title}.mp4")
-    video_file_path = temp_dir + f"{yt.title}.mp4"
+def download_mp3_from_mp4(ytb, temp_dir, video_file_name, video_file_path, audio_file_path):
+    stream = ytb.streams.get_highest_resolution()
+    stream.download(temp_dir, filename=video_file_name)
     video = VideoFileClip(video_file_path)
-    audio_file_path = temp_dir + f"{yt.title}.mp3"
-    # audio_file_name = f"{yt.title}.mp3"
     video.audio.write_audiofile(audio_file_path)
     st.success("유튜브 오디오 추출 완료!")
     with open(audio_file_path, 'rb') as f:
         audio_file = f.read()
-    return audio_file, audio_file_path
+    return audio_file
 
 # 스크립트 추출 함수
 def extract_script(audio_file, whisper_model):
@@ -62,8 +54,7 @@ def extract_script(audio_file, whisper_model):
         model = whisper.load_model(whisper_model)
         result = model.transcribe(audio_file)
         script = result["text"]
-        script_file_name = f"{audio_file.name}.txt"
-        return script, script_file_name
+        return script
     except Exception as e:
         print(f"스크립트 추출 과정에서 오류가 발생했습니다: {e}")
 
@@ -96,19 +87,30 @@ def yt_app():
     
     st.divider()
     
-    if yt_url is not None:
+    # if yt_url is not None:
+    if yt_url:
+        # 기본 변수 설정
+        temp_dir = create_temp_dir()
+        yt = YouTube(yt_url)
+        title = yt.title
+        video_file_name = f"{title}.mp4"
+        audio_file_name = f"{title}.mp3"
+        video_file_path = temp_dir + video_file_name
+        audio_file_path = temp_dir + audio_file_name
+        script_file_name = f"{title}.txt"
+        
+        # 컨테이너 생성
         con = st.container()
         with con:
             con.write("동영상(MP4) 내려받기")
             # 1. MP4 내려받기
             if st.button("🎬 동영상(MP4)"):
                 with st.spinner("Downloading mp4..."):
-                    video_file_content, video_file_name = download_mp4(yt_url)
+                    video_byte = download_mp4(yt)
                     st.success("유튜브 동영상 추출 완료!")
-                    st.video(video_file_content, format='video/mp4')
                     st.download_button(
                         label='🎬 동영상 내려받기', 
-                        data=video_file_content, 
+                        data=video_byte, 
                         file_name=video_file_name, 
                         mime='video/mp4'
                     )
@@ -118,9 +120,15 @@ def yt_app():
             # 2. MP3 내려받기
             if st.button("🔊 오디오(MP3)"):
                 with st.spinner("Downloading mp3..."):
-                    audio_file, audio_file_path = download_mp3_from_mp4(yt_url)
+                    audio_file = download_mp3_from_mp4(yt, temp_dir, video_file_name, video_file_path, audio_file_path)
                     st.audio(audio_file, format='audio/mp3')
                     st.write("오디오 파일을 저장하려면 메뉴(⋮)를 누르고 '다운로드'를 선택하세요. 🔊")
+                    st.download_button(
+                        label='🔊 오디오 내려받기',
+                        data=audio_file,
+                        file_name=audio_file_name,
+                        mime='audio/mp3'
+                    )
         
         with con:
             con.write("스크립트(TXT) 내려받기")
@@ -131,7 +139,7 @@ def yt_app():
                 # 스크립트 추출 실행
                 with st.spinner("먼저 오디오를 추출합니다..."):
                     print("오디오 추출 시작")
-                    audio_file, audio_file_path = download_mp3_from_mp4(yt_url)
+                    audio_file = download_mp3_from_mp4(yt, temp_dir, video_file_name, video_file_path, audio_file_path)
                     st.audio(audio_file, format='audio/mp3')
                     st.write("오디오 파일을 저장하려면 메뉴(⋮)를 누르고 '다운로드'를 선택하세요. 🔊")
                 with st.spinner("스크립트를 추출합니다. 시간이 좀 걸려요... 😥"):
@@ -139,7 +147,6 @@ def yt_app():
                     model = whisper.load_model(whisper_model)
                     result = model.transcribe(audio_file_path)
                     script = result['text']
-                    script_file_name = f"{YouTube(yt_url).title}.txt"
                     st.success("스크립트 추출 완료")
                     print("스크립트 추출 완료")
                 st.write(script)
@@ -152,7 +159,7 @@ def yt_app():
                         )
     else:
         pass
-#     st.stop()
+    # st.stop()
 # Main
 if __name__ == "__main__":
     yt_app()
