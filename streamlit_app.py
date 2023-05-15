@@ -75,7 +75,7 @@ def yt_app():
 
     # Main title and description
     st.title("유튜브 동영상 · 오디오 · 스크립트 추출기")
-    st.markdown("유튜브 URL을 넣으면 :blue[동영상], :red[오디오], :green[스크립트]를 내려받을 수 있습니다.")
+    st.markdown("유튜브 URL을 넣으면 🎬:blue[동영상], 🔊:red[오디오], 📝:green[스크립트]를 내려받을 수 있습니다.")
 
     # Input for YouTube URL
     yt_url = st.text_input(
