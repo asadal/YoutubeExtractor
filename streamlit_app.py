@@ -99,8 +99,8 @@ def yt_app():
     if yt_url is not None:
         con = st.container()
         with con:
-            con.write("🎬 동영상(MP4) 내려받기")
-            if st.button("동영상(MP4)"):
+            con.write("동영상(MP4) 내려받기")
+            if st.button("🎬 동영상(MP4)"):
                 with st.spinner("Downloading mp4..."):
                     video_file_content, video_file_name = download_mp4(yt_url)
                     st.success("유튜브 동영상 추출 완료!")
