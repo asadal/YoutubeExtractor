@@ -108,9 +108,7 @@ def yt_app():
                         data=video_file_content, 
                         file_name=video_file_name, 
                         mime='video/mp4'
-                        )
-                    
-        st.divider()
+                    )
         
         with con:
             con.write("오디오(MP3) 내려받기")
@@ -120,8 +118,6 @@ def yt_app():
                     audio_file, audio_file_path = download_mp3_from_mp4(yt_url)
                     st.audio(audio_file, format='audio/mp3')
                     st.write("오디오 파일을 저장하려면 메뉴(⋮)를 누르고 '다운로드'를 선택하세요.")
-        
-        st.divider()
         
         with con:
             con.write("스크립트(TXT) 내려받기")
