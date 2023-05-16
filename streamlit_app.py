@@ -93,7 +93,6 @@ def extract_script_timeline(transcript_list, temp_dir, script_file_name):
                     count += 10
         except FileNotFoundError:
             os.makedirs(temp_dir)
-             try: 
             with open(temp_dir + "timeline_" + script_file_name, "a+", encoding="utf-8") as f:
                 if i == 0:
                     f.write(timeline + '\n\n')
