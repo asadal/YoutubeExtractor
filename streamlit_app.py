@@ -1,13 +1,11 @@
+from youtube_transcript_api import YouTubeTranscriptApi
 from pytube import YouTube
-import whisper
 import streamlit as st
 import requests
 from datetime import datetime, timedelta
 from moviepy.editor import VideoFileClip
-# from tempfile import NamedTemporaryFile
 import os
 import tempfile as tf
-# from pydub import AudioSegment
 
 
 # temp_dir = "/Users/asadal/Downloads/"
@@ -17,8 +15,8 @@ datetime_utc = datetime.utcnow()
 datetime_kst = datetime_utc + timedelta(hours=9)
 today = datetime_kst.today().date().strftime('%Y.%m.%d')
 
-# whisper model ('tiny', 'base', 'small', 'medium', 'large')
-whisper_model = 'small' 
+# Youtube API-Key
+YOUTUBE_API_KEY = os.environ.get('GOOGLE_API_KEY')
 
 # 임시 폴더 생성
 def create_temp_dir():
@@ -28,6 +26,11 @@ def create_temp_dir():
     # 디렉터리 접근 권한 설정
     os.chmod(temp_dir, 0o700)
     return temp_dir
+
+# 유튜브 video_id 추출
+def get_video_id(ytb):
+    video_id = ytb.split("=")[-1]
+    return video_id
 
 # 유튜브 동영상 다운로드
 def download_mp4(ytb):
@@ -48,15 +51,47 @@ def download_mp3_from_mp4(ytb, temp_dir, video_file_name, video_file_path, audio
         audio_file = f.read()
     return audio_file
 
-# 스크립트 추출 함수
-def extract_script(audio_file, whisper_model):
-    try:
-        model = whisper.load_model(whisper_model)
-        result = model.transcribe(audio_file)
-        script = result["text"]
-        return script
-    except Exception as e:
-        print(f"스크립트 추출 과정에서 오류가 발생했습니다: {e}")
+def get_transcript_list(video_id):
+    transcript_list = YouTubeTranscriptApi.get_transcript(video_id,languages=["ko", "en"])
+    return transcript_list
+
+def read_file_data(filename, opt):
+    with open(filename, opt, encoding="utf-8") as f:
+        data = f.read()
+        return data
+
+def extract_script_all(transcript_list, temp_dir, script_file_name):
+    for script in transcript_list:
+        set_time = str(round(script['start']/60,2)).split(".")
+        text = script['text']
+        try:
+            with open(temp_dir + "all_" + script_file_name, "a+", encoding="utf-8") as f:
+                f.write(text + " ")
+        except FileNotFoundError:
+            os.makedirs(temp_dir)
+            with open(temp_dir + "all_" + script_file_name, "a+", encoding="utf-8") as f:
+                f.write(text + " ")
+    all_file = temp_dir + script_file_name + "_all"
+    return all_file
+
+def extract_script_timeline(transcript_list, temp_dir, script_file_name):
+    count = 10
+    for i, script in enumerate(transcript_list):
+        set_time = str(round(script['start']/60,2)).split(".")
+        timeline = "[" + set_time[0] + ":" + set_time[1] + "]"
+        text = script['text']
+        with open(temp_dir + "timeline_" + script_file_name, "a+", encoding="utf-8") as f:
+            if i == 0:
+                f.write(timeline + '\n\n')
+                f.write(text + " ")
+            elif i < count:
+                f.write(text + " ")
+            elif i == count:
+                f.write('\n\n' + timeline + '\n\n')
+                f.write(text + " ")
+                count += 10
+    timeline_file = temp_dir + script_file_name + "_timeline"
+    return timeline_file
 
 ############################################################
 
@@ -136,29 +171,29 @@ def yt_app():
                 con.write("스크립트(TXT) 내려받기")
                 # 3. 스크립트 내려받기
                 if st.button("📝 스크립트(TXT)"):
-                    # st.write("model : ", whisper_model)
-                    print("whisper model : ", whisper_model)
-                    # 스크립트 추출 실행
-                    with st.spinner("먼저 오디오를 추출합니다..."):
-                        print("오디오 추출 시작")
-                        audio_file = download_mp3_from_mp4(yt, temp_dir, video_file_name, video_file_path, audio_file_path)
-                        st.audio(audio_file, format='audio/mp3')
-                        st.write("오디오 파일을 저장하려면 메뉴(⋮)를 누르고 '다운로드'를 선택하세요. 🔊")
-                    with st.spinner("스크립트를 추출합니다. 시간이 좀 걸려요... 😥"):
-                        print("스크립트 추출 시작")
-                        model = whisper.load_model(whisper_model)
-                        result = model.transcribe(audio_file_path)
-                        script = result['text']
-                        st.success("스크립트 추출 완료")
-                        print("스크립트 추출 완료")
-                    st.write(script)
-                    file_bite = script.encode('utf-8')
-                    st.download_button(
-                            label="📥 Download TXT File 📝",
-                            data=file_bite,
-                            file_name=script_file_name,
-                            mime='text/plain'
-                            )
+                    temp_dir = create_temp_dir()
+                    video_id = yt.video_id
+                    transcript_list = get_transcript_list(video_id)
+                    entire_file = extract_script_all(transcript_list, temp_dir, script_file_name)
+                    timeline_file = extract_script_timeline(transcript_list, temp_dir, script_file_name)
+                    timeline_data = read_file_data(timeline_file, "r")
+                    st.write(timeline_data)
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        st.download_button(
+                                label="📥 Download Timeline Script ⏱",
+                                data=timeline_data,
+                                file_name="timeline_" + script_file_name,
+                                mime='text/plain'
+                                )
+                    with col2:
+                        st.download_button(
+                                label="Download Entire Script 📝",
+                                data=read_file_data(entire_file, "r"),
+                                file_name="all_" + script_file_name,
+                                mime='text/plain'
+                                )
+                                
         else:
             st.error("올바른 유튜브 주소를 입력해주세요.")
     else:
