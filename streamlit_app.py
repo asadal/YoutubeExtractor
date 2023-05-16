@@ -183,14 +183,14 @@ def yt_app():
                         st.download_button(
                                 label="📥 Download Timeline Script ⏱",
                                 data=timeline_data,
-                                file_name="timeline_" + script_file_name,
+                                file_name= script_file_name + "_timeline",
                                 mime='text/plain'
                                 )
                     with col2:
                         st.download_button(
-                                label="Download Entire Script 📝",
+                                label="📥 Download Entire Script 📝",
                                 data=read_file_data(entire_file, "r"),
-                                file_name="all_" + script_file_name,
+                                file_name=script_file_name + "_all",
                                 mime='text/plain'
                                 )
                                 
