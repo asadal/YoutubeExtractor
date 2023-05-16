@@ -1,5 +1,5 @@
 pytube
-openai-whisper
+youtube-transcript-api
 streamlit
 requests
 datetime
