@@ -65,11 +65,11 @@ def extract_script_all(transcript_list, temp_dir, script_file_name):
         set_time = str(round(script['start']/60,2)).split(".")
         text = script['text']
         try:
-            with open(temp_dir + "all_" + script_file_name, "a+", encoding="utf-8") as f:
+            with open(temp_dir + script_file_name + "_all", "a+", encoding="utf-8") as f:
                 f.write(text + " ")
         except FileNotFoundError:
             os.makedirs(temp_dir)
-            with open(temp_dir + "all_" + script_file_name, "a+", encoding="utf-8") as f:
+            with open(temp_dir + script_file_name + "_all", "a+", encoding="utf-8") as f:
                 f.write(text + " ")
     all_file = temp_dir + script_file_name + "_all"
     return all_file
@@ -80,29 +80,16 @@ def extract_script_timeline(transcript_list, temp_dir, script_file_name):
         set_time = str(round(script['start']/60,2)).split(".")
         timeline = "[" + set_time[0] + ":" + set_time[1] + "]"
         text = script['text']
-        try: 
-            with open(temp_dir + "timeline_" + script_file_name, "a+", encoding="utf-8") as f:
-                if i == 0:
-                    f.write(timeline + '\n\n')
-                    f.write(text + " ")
-                elif i < count:
-                    f.write(text + " ")
-                elif i == count:
-                    f.write('\n\n' + timeline + '\n\n')
-                    f.write(text + " ")
-                    count += 10
-        except FileNotFoundError:
-            os.makedirs(temp_dir)
-            with open(temp_dir + "timeline_" + script_file_name, "a+", encoding="utf-8") as f:
-                if i == 0:
-                    f.write(timeline + '\n\n')
-                    f.write(text + " ")
-                elif i < count:
-                    f.write(text + " ")
-                elif i == count:
-                    f.write('\n\n' + timeline + '\n\n')
-                    f.write(text + " ")
-                    count += 10
+        with open(temp_dir + script_file_name  + "_timeline", "a+", encoding="utf-8") as f:
+            if i == 0:
+                f.write(timeline + '\n\n')
+                f.write(text + " ")
+            elif i < count:
+                f.write(text + " ")
+            elif i == count:
+                f.write('\n\n' + timeline + '\n\n')
+                f.write(text + " ")
+                count += 10
     timeline_file = temp_dir + script_file_name + "_timeline"
     return timeline_file
 
@@ -215,3 +202,4 @@ def yt_app():
 # Main
 if __name__ == "__main__":
     yt_app()
+ 
