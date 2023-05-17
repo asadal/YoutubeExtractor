@@ -76,7 +76,7 @@ def set_time_form(script):
         set_min = round(min/60,2).split(".")
         hour, min = set_min[0], set_min[1]
     else:
-        hour, min = min, "00", min, sec
+        hour, min, sec = "00", min, sec
     set_time_form = f"[{hour}:{min}:{sec}]"
     print("시간 : ", set_time_form)
     return set_time_form
