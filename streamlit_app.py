@@ -7,9 +7,6 @@ from moviepy.editor import VideoFileClip
 import os
 import tempfile as tf
 
-
-# temp_dir = "/Users/asadal/Downloads/"
-
 # Today String
 datetime_utc = datetime.utcnow()
 datetime_kst = datetime_utc + timedelta(hours=9)
@@ -69,13 +66,11 @@ def set_time_form(script):
     hours = int(seconds // 3600)
     minutes = int((seconds % 3600) // 60)
     seconds = int(seconds % 60)
-    print(hours, minutes, seconds)
     times = [hours, minutes, seconds]
     for idx, time in enumerate(times):
         if time < 10:
             times[idx] = "0" + str(time)
             print(time)
-    print(*times)
     time_form = f"[{times[0]}:{times[1]}:{times[2]}]"
     return time_form
 
