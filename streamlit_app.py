@@ -78,6 +78,7 @@ def set_time_form(script):
     else:
         hour, min = min, "00", min, sec
     set_time_form = f"[{hour}:{min}:{sec}]"
+    print("시간 : ", set_time_form)
     return set_time_form
 
 def extract_script_all(transcript_list, temp_dir, all_file_name):
