@@ -89,26 +89,26 @@ def extract_script_timeline(transcript_list, temp_dir, script_file_name):
         try:
             with open(temp_dir + script_file_name  + "_timeline", "a+", encoding="utf-8") as f:
                 if i == 0:
-                f.write(timeline + '\n\n')
-                f.write(text + " ")
-            elif i < count:
-                f.write(text + " ")
-            elif i == count:
-                f.write('\n\n' + timeline + '\n\n')
-                f.write(text + " ")
-                count += 10
+                    f.write(timeline + '\n\n')
+                    f.write(text + " ")
+                elif i < count:
+                    f.write(text + " ")
+                elif i == count:
+                    f.write('\n\n' + timeline + '\n\n')
+                    f.write(text + " ")
+                    count += 10
         except FileNotFoundError:
             os.mkdir(temp_dir)
             with open(temp_dir + script_file_name  + "_timeline", "a+", encoding="utf-8") as f:
-            if i == 0:
-                f.write(timeline + '\n\n')
-                f.write(text + " ")
-            elif i < count:
-                f.write(text + " ")
-            elif i == count:
-                f.write('\n\n' + timeline + '\n\n')
-                f.write(text + " ")
-                count += 10
+                if i == 0:
+                    f.write(timeline + '\n\n')
+                    f.write(text + " ")
+                elif i < count:
+                    f.write(text + " ")
+                elif i == count:
+                    f.write('\n\n' + timeline + '\n\n')
+                    f.write(text + " ")
+                    count += 10
     timeline_file = temp_dir + script_file_name + "_timeline"
     return timeline_file
 
