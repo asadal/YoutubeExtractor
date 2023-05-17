@@ -62,10 +62,10 @@ def get_transcript_list(video_id):
         st.stop()
     return transcript_list
 
-def read_file_data(filename, opt):
-    with open(filename, opt, encoding="utf-8") as f:
-        data = f.read()
-        return data
+# def read_file_data(filename, opt):
+#     with open(filename, opt, encoding="utf-8") as f:
+#         data = f.read()
+#         return data
 
 def extract_script_all(transcript_list, temp_dir, script_file_name):
     for script in transcript_list:
@@ -195,7 +195,8 @@ def yt_app():
                     transcript_list = get_transcript_list(video_id)
                     entire_file = extract_script_all(transcript_list, temp_dir, script_file_name)
                     timeline_file = extract_script_timeline(transcript_list, temp_dir, script_file_name)
-                    timeline_data = read_file_data(timeline_file, "r")
+                    with open(timeline_file, "r", encoding="utf-8") as f:
+                        timeline_data = f.read()
                     st.write(timeline_data)
                     col1, col2 = st.columns(2)
                     with col1:
