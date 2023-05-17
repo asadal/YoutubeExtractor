@@ -67,9 +67,19 @@ def get_transcript_list(video_id):
 #         data = f.read()
 #         return data
 
+def set_time_form(script):
+    set_time = str(round(script['start']/60,2)).split(".")
+    min, sec = set_time[0], set_time[1]
+    if min < 10:
+        min = "0" + min
+    elif min >= 60:
+        set_min = str(round(min/60,2)).split(".")
+        hour, min = set_min[0], set_min[1]
+    set_time_form = f"[{hour}:{min}:{sec}]"
+    return set_time_form
+
 def extract_script_all(transcript_list, temp_dir, all_file_name):
     for script in transcript_list:
-        set_time = str(round(script['start']/60,2)).split(".")
         text = script['text']
         try:
             with open(temp_dir + all_file_name, "a+", encoding="utf-8") as f:
@@ -84,8 +94,7 @@ def extract_script_all(transcript_list, temp_dir, all_file_name):
 def extract_script_timeline(transcript_list, temp_dir, timeline_file_name):
     count = 10
     for i, script in enumerate(transcript_list):
-        set_time = str(round(script['start']/60,2)).split(".")
-        timeline = "[" + set_time[0] + ":" + set_time[1] + "]"
+        timeline = set_time_form(script)
         text = script['text']
         try:
             with open(temp_dir + timeline_file_name, "a+", encoding="utf-8") as f:
