@@ -74,8 +74,7 @@ def set_time_form(script):
     times = [hour, minute, sec]
     for time in times:
         if len(time) < 2:
-            times.remove(time)
-            times.replace(times.index(time), "0" + time)
+            times[time.index] = "0" + time
     time_form = f"[{times[0]}:{times[1]}:{times[2]}]"
     return time_form
 
