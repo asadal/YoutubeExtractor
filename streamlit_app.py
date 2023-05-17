@@ -67,27 +67,27 @@ def get_transcript_list(video_id):
 #         data = f.read()
 #         return data
 
-def extract_script_all(transcript_list, temp_dir, script_file_name):
+def extract_script_all(transcript_list, temp_dir, all_file_name):
     for script in transcript_list:
         set_time = str(round(script['start']/60,2)).split(".")
         text = script['text']
         try:
-            with open(temp_dir + script_file_name + "_all", "a+", encoding="utf-8") as f:
+            with open(temp_dir + all_file_name + "_all", "a+", encoding="utf-8") as f:
                 f.write(text + " ")
         except Exception as e:
             st.error("오류가 발생했습니다. 😥")
             st.error(e)
-    all_file = temp_dir + script_file_name + "_all"
+    all_file = temp_dir + all_file_name + "_all"
     return all_file
 
-def extract_script_timeline(transcript_list, temp_dir, script_file_name):
+def extract_script_timeline(transcript_list, temp_dir, timeline_file_name):
     count = 10
     for i, script in enumerate(transcript_list):
         set_time = str(round(script['start']/60,2)).split(".")
         timeline = "[" + set_time[0] + ":" + set_time[1] + "]"
         text = script['text']
         try:
-            with open(temp_dir + script_file_name  + "_timeline", "a+", encoding="utf-8") as f:
+            with open(temp_dir + timeline_file_name, "a+", encoding="utf-8") as f:
                 if i == 0:
                     f.write(timeline + '\n\n')
                     f.write(text + " ")
@@ -99,7 +99,7 @@ def extract_script_timeline(transcript_list, temp_dir, script_file_name):
                     count += 10
         except FileNotFoundError:
             os.mkdir(temp_dir)
-            with open(temp_dir + script_file_name  + "_timeline", "a+", encoding="utf-8") as f:
+            with open(temp_dir + timeline_file_name, "a+", encoding="utf-8") as f:
                 if i == 0:
                     f.write(timeline + '\n\n')
                     f.write(text + " ")
@@ -109,7 +109,7 @@ def extract_script_timeline(transcript_list, temp_dir, script_file_name):
                     f.write('\n\n' + timeline + '\n\n')
                     f.write(text + " ")
                     count += 10
-    timeline_file = temp_dir + script_file_name + "_timeline"
+    timeline_file = temp_dir + timeline_file_name
     return timeline_file
 
 ############################################################
@@ -153,8 +153,8 @@ def yt_app():
             audio_file_name = f"{title}.mp3"
             video_file_path = temp_dir + video_file_name
             audio_file_path = temp_dir + audio_file_name
-            script_file_name = f"{title}.txt"
-
+            timeline_file_name = f"{title}_timeline.txt"
+            all_file_name = f"{title}_all.txt"
             # 컨테이너 생성
             con = st.container()
             with con:
@@ -193,26 +193,26 @@ def yt_app():
                     temp_dir = create_temp_dir()
                     video_id = yt.video_id
                     transcript_list = get_transcript_list(video_id)
-                    entire_file = extract_script_all(transcript_list, temp_dir, script_file_name)
-                    timeline_file = extract_script_timeline(transcript_list, temp_dir, script_file_name)
+                    all_file = extract_script_all(transcript_list, temp_dir, all_file_name)
+                    timeline_file = extract_script_timeline(transcript_list, temp_dir, timeline_file_name)
                     with open(timeline_file, "r", encoding="utf-8") as f:
                         timeline_data = f.read()
                     st.write(timeline_data)
-                    with open(entire_file, "r", encoding="utf-8") as f:
-                        entire_data = f.read()
+                    with open(all_file, "r", encoding="utf-8") as f:
+                        all_data = f.read()
                     col1, col2 = st.columns(2)
                     with col1:
                         st.download_button(
                                 label="📥 Download Timeline Script ⏱",
                                 data=timeline_data,
-                                file_name= script_file_name + "_timeline",
+                                file_name=timeline_file_name,
                                 mime='text/plain'
                                 )
                     with col2:
                         st.download_button(
                                 label="📥 Download Entire Script 📝",
-                                data=entire_data,
-                                file_name=script_file_name + "_all",
+                                data=all_data,
+                                file_name=all_file_name,
                                 mime='text/plain'
                                 )
                                 
