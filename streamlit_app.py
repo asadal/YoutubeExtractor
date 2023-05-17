@@ -72,9 +72,9 @@ def set_time_form(script):
     set_hour = str(round(int(set_time[0])/60,2)).split(".")
     hour, minute, sec = set_hour[0], set_hour[1], set_time[1]
     times = [hour, minute, sec]
-    for time in times:
+    for idx, time in enumerate(times):
         if len(time) < 2:
-            times[time.index] = "0" + time
+            times[idx] = "0" + time
     time_form = f"[{times[0]}:{times[1]}:{times[2]}]"
     return time_form
 
