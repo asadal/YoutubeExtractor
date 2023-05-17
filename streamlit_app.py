@@ -211,7 +211,7 @@ def yt_app():
                     with col2:
                         st.download_button(
                                 label="📥 Download Entire Script 📝",
-                                data=,
+                                data=entire_data,
                                 file_name=script_file_name + "_all",
                                 mime='text/plain'
                                 )
