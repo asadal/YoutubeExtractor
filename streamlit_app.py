@@ -55,8 +55,8 @@ def get_transcript_list(video_id):
     try:
         transcript_list = YouTubeTranscriptApi.get_transcript(video_id,languages=["ko", "en"])
         return transcript_list
-    except TranscriptsDisabled:
-        st.error("스크립트가 없는 영상입니다. 😢")
+    except Exception as e:
+        st.error("스크립트가 없는 영상입니다. 😢", e)
         st.markdown("[Youtube-Whisper](https://huggingface.co/spaces/kazuk/youtube-whisper-10)를 이용해 스크립트를 추출하세요")
         st.stop()
     return transcript_list
