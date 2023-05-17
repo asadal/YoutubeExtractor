@@ -64,7 +64,7 @@ def get_transcript_list(video_id):
     return transcript_list
 
 # 시작 시간 표시
-def convert_seconds(script):
+def set_time_form(script):
     seconds = script['start']
     hours = int(seconds // 3600)
     minutes = int((seconds % 3600) // 60)
