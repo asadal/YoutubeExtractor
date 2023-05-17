@@ -58,7 +58,7 @@ def get_transcript_list(video_id):
     except Exception as e:
         st.error("스크립트가 없는 영상입니다. 😥")
         st.error(e)
-        st.markdown("[Youtube-Whisper](https://huggingface.co/spaces/kazuk/youtube-whisper-10)를 이용해 스크립트를 추출하세요")
+        st.markdown("[Hani Script Extractor](https://haniscriptextractor.streamlit.app/)를 이용해 스크립트를 추출하세요")
         st.stop()
     return transcript_list
 
