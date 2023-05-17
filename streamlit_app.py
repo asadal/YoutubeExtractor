@@ -72,12 +72,12 @@ def extract_script_all(transcript_list, temp_dir, all_file_name):
         set_time = str(round(script['start']/60,2)).split(".")
         text = script['text']
         try:
-            with open(temp_dir + all_file_name + "_all", "a+", encoding="utf-8") as f:
+            with open(temp_dir + all_file_name, "a+", encoding="utf-8") as f:
                 f.write(text + " ")
         except Exception as e:
             st.error("오류가 발생했습니다. 😥")
             st.error(e)
-    all_file = temp_dir + all_file_name + "_all"
+    all_file = temp_dir + all_file_name
     return all_file
 
 def extract_script_timeline(transcript_list, temp_dir, timeline_file_name):
