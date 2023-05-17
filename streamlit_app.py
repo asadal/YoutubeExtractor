@@ -51,6 +51,7 @@ def download_mp3_from_mp4(ytb, temp_dir, video_file_name, video_file_path, audio
         audio_file = f.read()
     return audio_file
 
+# 스크립트 목록 추출. 없으면 안내 메시지 출력
 def get_transcript_list(video_id):
     try:
         transcript_list = YouTubeTranscriptApi.get_transcript(video_id,languages=["ko", "en"])
@@ -62,29 +63,23 @@ def get_transcript_list(video_id):
         st.stop()
     return transcript_list
 
-# def read_file_data(filename, opt):
-#     with open(filename, opt, encoding="utf-8") as f:
-#         data = f.read()
-#         return data
-
-def set_time_form(script):
-    start = script['start']
-    print(start)
-    set_time = str(round(start/60,2)).split(".")
-    set_hour = str(round(int(set_time[0])/60,2)).split(".")
-    hour, minute, sec = set_hour[0], set_hour[1], set_time[1]
-    times = [hour, minute, sec]
+# 시작 시간 표시
+def convert_seconds(script):
+    seconds = script['start']
+    hours = int(seconds // 3600)
+    minutes = int((seconds % 3600) // 60)
+    seconds = int(seconds % 60)
+    print(hours, minutes, seconds)
+    times = [hours, minutes, seconds]
     for idx, time in enumerate(times):
-        if len(time) < 2:
-            times[idx] = "0" + time
-        elif int(time) >= 60:
-            times[idx] = int(time)%60
-            times[idx-1] = int(time)+int(time)//60
-        else:
-            pass
+        if time < 10:
+            times[idx] = "0" + str(time)
+            print(time)
+    print(*times)
     time_form = f"[{times[0]}:{times[1]}:{times[2]}]"
     return time_form
 
+# 통 스크립트 표시
 def extract_script_all(transcript_list, temp_dir, all_file_name):
     for script in transcript_list:
         text = script['text']
@@ -98,6 +93,7 @@ def extract_script_all(transcript_list, temp_dir, all_file_name):
     all_file = temp_dir + all_file_name
     return all_file
 
+# 타임라인 스크립트 표시
 def extract_script_timeline(transcript_list, temp_dir, timeline_file_name):
     count = 10
     for i, script in enumerate(transcript_list):
