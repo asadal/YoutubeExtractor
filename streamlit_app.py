@@ -74,9 +74,10 @@ def extract_script_all(transcript_list, temp_dir, all_file_name):
         try:
             with open(temp_dir + all_file_name, "a+", encoding="utf-8") as f:
                 f.write(text + " ")
-        except Exception as e:
-            st.error("오류가 발생했습니다. 😥")
-            st.error(e)
+        except FileNotFoundError:
+            os.mkdir(temp_dir)
+            with open(temp_dir + all_file_name, "a+", encoding="utf-8") as f:
+                f.write(text + " ")
     all_file = temp_dir + all_file_name
     return all_file
 
