@@ -198,6 +198,8 @@ def yt_app():
                     with open(timeline_file, "r", encoding="utf-8") as f:
                         timeline_data = f.read()
                     st.write(timeline_data)
+                    with open(entire_file, "r", encoding="utf-8") as f:
+                        entire_data = f.read()
                     col1, col2 = st.columns(2)
                     with col1:
                         st.download_button(
@@ -209,7 +211,7 @@ def yt_app():
                     with col2:
                         st.download_button(
                                 label="📥 Download Entire Script 📝",
-                                data=read_file_data(entire_file, "r"),
+                                data=,
                                 file_name=script_file_name + "_all",
                                 mime='text/plain'
                                 )
