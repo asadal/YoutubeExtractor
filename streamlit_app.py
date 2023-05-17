@@ -68,18 +68,16 @@ def get_transcript_list(video_id):
 #         return data
 
 def set_time_form(script):
-    set_time = str(round(script['start']/60,2)).split(".")
-    min, sec = set_time[0], set_time[1]
-    if int(min) < 10:
-        hour, min = "00", "0" + min
-    elif int(min) >= 60:
-        set_min = round(min/60,2).split(".")
-        hour, min = set_min[0], set_min[1]
-    else:
-        hour, min, sec = "00", min, sec
-    set_time_form = f"[{hour}:{min}:{sec}]"
-    print("시간 : ", set_time_form)
-    return set_time_form
+    set_time = str(round(script/60,2)).split(".")
+    set_hour = str(round(int(set_time[0])/60,2)).split(".")
+    hour, minute, sec = set_hour[0], set_hour[1], set_time[1]
+    times = [hour, minute, sec]
+    for time in times:
+        if len(time) < 2:
+            times.remove(time)
+            times.insert(times.index(time), "0" + time)
+    time_form = f"[{times[0]}:{times[1]}:{times[2]}]"
+    return time_form
 
 def extract_script_all(transcript_list, temp_dir, all_file_name):
     for script in transcript_list:
