@@ -52,7 +52,13 @@ def download_mp3_from_mp4(ytb, temp_dir, video_file_name, video_file_path, audio
     return audio_file
 
 def get_transcript_list(video_id):
-    transcript_list = YouTubeTranscriptApi.get_transcript(video_id,languages=["ko", "en"])
+    try:
+        transcript_list = YouTubeTranscriptApi.get_transcript(video_id,languages=["ko", "en"])
+        return transcript_list
+    except TranscriptsDisabled:
+        st.error("스크립트가 없는 영상입니다. 😢")
+        st.markdown("[Youtube-Whisper](https://huggingface.co/spaces/kazuk/youtube-whisper-10)를 이용해 스크립트를 추출하세요")
+        st.stop()
     return transcript_list
 
 def read_file_data(filename, opt):
@@ -67,10 +73,8 @@ def extract_script_all(transcript_list, temp_dir, script_file_name):
         try:
             with open(temp_dir + script_file_name + "_all", "a+", encoding="utf-8") as f:
                 f.write(text + " ")
-        except TranscriptsDisabled:
-            st.error("스크립트가 없는 영상입니다. 😢")
-            st.markdown("[Youtube-Whisper](https://huggingface.co/spaces/kazuk/youtube-whisper-10)를 이용해 스크립트를 추출하세요")
-            st.stop()
+        except Exception as e:
+            st.error("오류가 발생했습니다. 😢", e)
     all_file = temp_dir + script_file_name + "_all"
     return all_file
 
