@@ -71,7 +71,7 @@ def set_time_form(script):
     set_time = str(round(script['start']/60,2)).split(".")
     min, sec = set_time[0], set_time[1]
     if int(min) < 10:
-        min = "0" + min
+        hour, min = "00", "0" + min
     elif int(min) >= 60:
         set_min = round(min/60,2).split(".")
         hour, min = set_min[0], set_min[1]
