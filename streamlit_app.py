@@ -75,6 +75,11 @@ def set_time_form(script):
     for idx, time in enumerate(times):
         if len(time) < 2:
             times[idx] = "0" + time
+        elif int(time) >= 60:
+            times[idx] = time%60
+            times[idx-1] = int(time)+time//60
+        else:
+            pass
     time_form = f"[{times[0]}:{times[1]}:{times[2]}]"
     return time_form
 
