@@ -67,10 +67,10 @@ def extract_script_all(transcript_list, temp_dir, script_file_name):
         try:
             with open(temp_dir + script_file_name + "_all", "a+", encoding="utf-8") as f:
                 f.write(text + " ")
-        except FileNotFoundError:
-            os.makedirs(temp_dir)
-            with open(temp_dir + script_file_name + "_all", "a+", encoding="utf-8") as f:
-                f.write(text + " ")
+        except TranscriptsDisabled:
+            st.error("스크립트가 없는 영상입니다. 😢")
+            st.markdown("[Youtube-Whisper](https://huggingface.co/spaces/kazuk/youtube-whisper-10)를 이용해 스크립트를 추출하세요")
+            st.stop()
     all_file = temp_dir + script_file_name + "_all"
     return all_file
 
