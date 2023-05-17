@@ -70,10 +70,10 @@ def get_transcript_list(video_id):
 def set_time_form(script):
     set_time = str(round(script['start']/60,2)).split(".")
     min, sec = set_time[0], set_time[1]
-    if min < 10:
+    if int(min) < 10:
         min = "0" + min
-    elif min >= 60:
-        set_min = str(round(min/60,2)).split(".")
+    elif int(min) >= 60:
+        set_min = round(min/60,2).split(".")
         hour, min = set_min[0], set_min[1]
     set_time_form = f"[{hour}:{min}:{sec}]"
     return set_time_form
