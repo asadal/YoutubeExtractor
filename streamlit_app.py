@@ -68,7 +68,7 @@ def get_transcript_list(video_id):
 #         return data
 
 def set_time_form(script):
-    set_time = str(round(script['time']/60,2)).split(".")
+    set_time = str(round(script['start']/60,2)).split(".")
     set_hour = str(round(int(set_time[0])/60,2)).split(".")
     hour, minute, sec = set_hour[0], set_hour[1], set_time[1]
     times = [hour, minute, sec]
