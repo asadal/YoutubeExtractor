@@ -86,7 +86,11 @@ def extract_script_timeline(transcript_list, temp_dir, script_file_name):
         set_time = str(round(script['start']/60,2)).split(".")
         timeline = "[" + set_time[0] + ":" + set_time[1] + "]"
         text = script['text']
-        with open(temp_dir + script_file_name  + "_timeline", "a+", encoding="utf-8") as f:
+        try:
+            with open(temp_dir + script_file_name  + "_timeline", "a+", encoding="utf-8") as f:
+        except FileNotFoundError:
+            os.mkdir(temp_dir)
+            with open(temp_dir + script_file_name  + "_timeline", "a+", encoding="utf-8") as f:
             if i == 0:
                 f.write(timeline + '\n\n')
                 f.write(text + " ")
