@@ -147,7 +147,7 @@ def yt_app():
 
     # Input for YouTube URL
     yt_url = st.text_input(
-        label="유튜브 주소를 넣어주세요.",
+        label="유튜브 주소를 넣어주세요.\n유튜브 쇼츠도 지원합니다.",
         placeholder="ex) https://www.youtube.com/watch?v=nVQY16LgEyU",
         key="yt_url"
     )
