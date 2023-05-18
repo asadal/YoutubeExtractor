@@ -32,7 +32,7 @@ def get_video_id(ytb):
     if youtube_url:
         video_id = ytb.split("=")[-1]
     else:
-        video_id = ytb.split("/"[-1]
+        video_id = ytb.split("/")[-1]
     return video_id
 
 # 유튜브 동영상 다운로드
