@@ -26,8 +26,14 @@ def create_temp_dir():
 
 # 유튜브 video_id 추출
 def get_video_id(ytb):
-    video_id = ytb.split("=")[-1]
-    return video_id
+    ytb_urls = ["https://www.youtube.com/watch?v=", "https://www.youtube.com/shorts/"]
+    youtube_url = ytb.startswith(ytb_url[0])
+    shorts_url = ytb.startswith(ytb_url[1])
+    if youtube_url:
+        video_id = ytb.split("=")[-1]
+    else:
+        video_id = ytb.split("/"[-1]
+        return video_id
 
 # 유튜브 동영상 다운로드
 def download_mp4(ytb):
@@ -151,8 +157,7 @@ def yt_app():
     
     # if yt_url is not None:
     if yt_url:
-        
-        if yt_url.startswith("https://www.youtube.com/watch?v="):
+        if yt_url.startswith("https://www.youtube.com/"):
             # 기본 변수 설정
             temp_dir = create_temp_dir()
             yt = YouTube(yt_url)
