@@ -27,8 +27,8 @@ def create_temp_dir():
 # 유튜브 video_id 추출
 def get_video_id(ytb):
     ytb_urls = ["https://www.youtube.com/watch?v=", "https://www.youtube.com/shorts/"]
-    youtube_url = ytb.startswith(ytb_url[0])
-    shorts_url = ytb.startswith(ytb_url[1])
+    youtube_url = ytb.startswith(ytb_urls[0])
+    shorts_url = ytb.startswith(ytb_urls[1])
     if youtube_url:
         video_id = ytb.split("=")[-1]
     else:
