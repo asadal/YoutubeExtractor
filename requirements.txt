@@ -1,4 +1,4 @@
-git+https://github.com/pytube/pytube
+git+https://github.com/JavDomGom/pytube
 youtube-transcript-api
 streamlit
 requests
