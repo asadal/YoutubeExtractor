@@ -1,5 +1,4 @@
 git+https://github.com/pytube/pytube
-pytubetemp
 youtube-transcript-api
 streamlit
 requests
