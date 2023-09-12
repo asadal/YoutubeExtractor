@@ -12,6 +12,19 @@ datetime_utc = datetime.utcnow()
 datetime_kst = datetime_utc + timedelta(hours=9)
 today = datetime_kst.today().date().strftime('%Y.%m.%d')
 
+# session_state 설정
+if video_byte not in st.session_state:
+    video_byte = None
+
+if audio_file not in st.session_state:
+    audio_file = None
+
+if timeline_data not in st.session_state:
+    timeline_data = ""
+
+if all_data not in st.session_state:
+    all_data = ""
+
 # Youtube API-Key
 YOUTUBE_API_KEY = os.environ.get('GOOGLE_API_KEY')
 
@@ -193,10 +206,11 @@ def yt_app():
                     with st.spinner("Downloading mp3..."):
                         audio_file = download_mp3_from_mp4(yt, temp_dir, video_file_name, video_file_path, audio_file_path)
                         st.audio(audio_file, format='audio/mp3')
+                        st.session_state.audio_file = audio_file
                         st.write("오디오 파일을 저장하려면 메뉴(⋮)를 누르고 '다운로드'를 선택하세요. 🔊")
                         st.download_button(
                             label='📥 Download MP3 File 🔊',
-                            data=audio_file,
+                            data=st.session_state.audio_file,
                             file_name=audio_file_name,
                             mime='audio/mp3'
                         )
@@ -212,21 +226,23 @@ def yt_app():
                     timeline_file = extract_script_timeline(transcript_list, temp_dir, timeline_file_name)
                     with open(timeline_file, "r", encoding="utf-8") as f:
                         timeline_data = f.read()
-                    st.write(timeline_data)
+                    st.session_state.timeline_data = timeline_data
+                    st.write(st.session_state.timeline_data)
                     with open(all_file, "r", encoding="utf-8") as f:
                         all_data = f.read()
+                    st.session_state.all_data = all_data
                     col1, col2 = st.columns(2)
                     with col1:
                         st.download_button(
                                 label="📥 Download Timeline Script ⏱",
-                                data=timeline_data,
+                                data=st.session_state.timeline_data,
                                 file_name=timeline_file_name,
                                 mime='text/plain'
                                 )
                     with col2:
                         st.download_button(
                                 label="📥 Download Entire Script 📝",
-                                data=all_data,
+                                data=st.session_state.all_data,
                                 file_name=all_file_name,
                                 mime='text/plain'
                                 )
