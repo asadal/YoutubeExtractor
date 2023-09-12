@@ -13,17 +13,17 @@ datetime_kst = datetime_utc + timedelta(hours=9)
 today = datetime_kst.today().date().strftime('%Y.%m.%d')
 
 # session_state 설정
-if video_byte not in st.session_state:
-    video_byte = None
+if 'video_byte' not in st.session_state:
+    st.session_state.video_byte = None
 
-if audio_file not in st.session_state:
-    audio_file = None
+if 'audio_file' not in st.session_state:
+    st.session_state.audio_file = None
 
-if timeline_data not in st.session_state:
-    timeline_data = ""
+if 'timeline_data' not in st.session_state:
+    st.session_state.timeline_data = ""
 
-if all_data not in st.session_state:
-    all_data = ""
+if 'all_data' not in st.session_state:
+    st.session_state.all_data = ""
 
 # Youtube API-Key
 YOUTUBE_API_KEY = os.environ.get('GOOGLE_API_KEY')
