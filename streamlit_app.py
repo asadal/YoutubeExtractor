@@ -6,27 +6,23 @@ from datetime import datetime, timedelta
 from moviepy.editor import VideoFileClip
 import os
 import tempfile as tf
+import ssl
+import re
+
+ssl._create_default_https_context = ssl._create_unverified_context
 
 # Today String
 datetime_utc = datetime.utcnow()
 datetime_kst = datetime_utc + timedelta(hours=9)
 today = datetime_kst.today().date().strftime('%Y.%m.%d')
 
-# session_state 설정
-if 'video_byte' not in st.session_state:
-    st.session_state.video_byte = None
-
-if 'audio_file' not in st.session_state:
-    st.session_state.audio_file = None
-
-if 'timeline_data' not in st.session_state:
-    st.session_state.timeline_data = ""
-
-if 'all_data' not in st.session_state:
-    st.session_state.all_data = ""
-
 # Youtube API-Key
 YOUTUBE_API_KEY = os.environ.get('GOOGLE_API_KEY')
+
+def sanitize_filename(filename):
+    filename = re.sub(r'[\\/*?:"<>|]', "", filename)  # Remove special chars.
+    filename = filename.replace(" ", "_")  # Replace spaces with underscore.
+    return filename
 
 # 임시 폴더 생성
 def create_temp_dir():
@@ -58,6 +54,8 @@ def download_mp4(ytb):
 
 # mp3 추출 함수
 def download_mp3_from_mp4(ytb, temp_dir, video_file_name, video_file_path, audio_file_path):
+    if not os.path.exists(temp_dir):
+        os.makedirs(temp_dir)
     stream = ytb.streams.get_highest_resolution()
     stream.download(temp_dir, filename=video_file_name)
     video = VideoFileClip(video_file_path)
@@ -176,7 +174,9 @@ def yt_app():
             yt = YouTube(yt_url)
             title = yt.title
             video_file_name = f"{title}.mp4"
+            video_file_name = sanitize_filename(video_file_name)
             audio_file_name = f"{title}.mp3"
+            audio_file_name = sanitize_filename(audio_file_name)
             video_file_path = temp_dir + video_file_name
             audio_file_path = temp_dir + audio_file_name
             timeline_file_name = f"{title}_timeline.txt"
@@ -190,11 +190,10 @@ def yt_app():
                     with st.spinner("Downloading mp4..."):
                         video_byte = download_mp4(yt)
                         st.success("유튜브 동영상 추출 완료!")
-                        st.session_state.video_byte = video_byte
-                        st.video(st.session_state.video_byte, format='video/mp4')
+                        st.video(video_byte, format='video/mp4')
                         st.download_button(
                             label='📥 Download MP4 File 🎬', 
-                            data=st.session_state.video_byte, 
+                            data=video_byte, 
                             file_name=video_file_name, 
                             mime='video/mp4'
                         )
@@ -205,12 +204,11 @@ def yt_app():
                 if st.button("🔊 오디오(MP3)"):
                     with st.spinner("Downloading mp3..."):
                         audio_file = download_mp3_from_mp4(yt, temp_dir, video_file_name, video_file_path, audio_file_path)
-                        st.session_state.audio_file = audio_file
-                        st.audio(st.session_state.audio_file, format='audio/mp3')
+                        st.audio(audio_file, format='audio/mp3')
                         st.write("오디오 파일을 저장하려면 메뉴(⋮)를 누르고 '다운로드'를 선택하세요. 🔊")
                         st.download_button(
                             label='📥 Download MP3 File 🔊',
-                            data=st.session_state.audio_file,
+                            data=audio_file,
                             file_name=audio_file_name,
                             mime='audio/mp3'
                         )
@@ -226,23 +224,21 @@ def yt_app():
                     timeline_file = extract_script_timeline(transcript_list, temp_dir, timeline_file_name)
                     with open(timeline_file, "r", encoding="utf-8") as f:
                         timeline_data = f.read()
-                    st.session_state.timeline_data = timeline_data
-                    st.write(st.session_state.timeline_data)
+                    st.write(timeline_data)
                     with open(all_file, "r", encoding="utf-8") as f:
                         all_data = f.read()
-                    st.session_state.all_data = all_data
                     col1, col2 = st.columns(2)
                     with col1:
                         st.download_button(
                                 label="📥 Download Timeline Script ⏱",
-                                data=st.session_state.timeline_data,
+                                data=timeline_data,
                                 file_name=timeline_file_name,
                                 mime='text/plain'
                                 )
                     with col2:
                         st.download_button(
                                 label="📥 Download Entire Script 📝",
-                                data=st.session_state.all_data,
+                                data=all_data,
                                 file_name=all_file_name,
                                 mime='text/plain'
                                 )
