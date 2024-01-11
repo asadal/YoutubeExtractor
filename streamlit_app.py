@@ -170,7 +170,7 @@ def yt_app():
     
     # if yt_url is not None:
     if yt_url:
-        if yt_url.startswith("https://www.youtube.com/"):
+        if yt_url.startswith("https://www.youtube.com/") or yt_url.startswith("https://youtu.be/"):
             # 기본 변수 설정
             temp_dir = create_temp_dir()
             yt = YouTube(yt_url)
