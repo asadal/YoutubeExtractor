@@ -1,4 +1,4 @@
-git+https://github.com/hanimedialab/pytube.git
+pytube
 youtube-transcript-api
 streamlit
 requests
