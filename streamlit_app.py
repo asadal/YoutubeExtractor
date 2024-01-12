@@ -21,7 +21,7 @@ YOUTUBE_API_KEY = os.environ.get('GOOGLE_API_KEY')
 
 def sanitize_filename(filename):
     filename = re.sub(r'[\\/*?:"<>|]', "", filename)  # Remove special chars.
-    filename = filename.replace(" ", "_")  # Replace spaces with underscore.
+    # filename = filename.replace(" ", "_")  # Replace spaces with underscore.
     return filename
 
 # 임시 폴더 생성
