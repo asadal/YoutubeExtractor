@@ -9,6 +9,7 @@ import os
 import tempfile as tf
 import ssl
 import re
+import youtube_dl
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
@@ -52,6 +53,16 @@ def download_mp4(ytb):
     print("stream.url : ", stream.url)
     video_byte = requests.get(stream.url).content
     return video_byte
+
+# def download_mp4(ytb):
+#     ydl_opts = {
+#         'outtmpl': 'video.mp4',  # 다운로드된 파일명
+#         'merge_output_format': 'mp4',  # 다운로드 형식
+#     }
+
+#     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+#         ydl.download([ytb])
+
 
 # mp3 추출 함수
 def download_mp3_from_mp4(ytb, temp_dir, video_file_name, video_file_path, audio_file_path):
@@ -146,12 +157,24 @@ def yt_app():
         page_title="유튜브 추출기",
         page_icon="https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo.png"
     )
+    
+    if 'video_byte' not in st.session_state:
+        st.session_state.video_byte = None
+    if 'audio_file' not in st.session_state:
+        st.session_state.audio_file = None
+    if 'script_timeline' not in st.session_state:
+        st.session_state.script_timeline = None
 
-    # Featured image
-    st.image(
-        "https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo.png",
-        width=150
-    )
+    # Featured image with reload button
+    col1, col2 = st.columns([1, 0.3])
+    with col1:
+        st.image(
+            "https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo.png",
+            width=150
+        )
+    with col2:
+        if st.button("Reload ⟳"):
+            st.rerun()
 
     # Main title and description
     st.title("유튜브 동영상 · 오디오 · 스크립트 추출기")
@@ -191,58 +214,54 @@ def yt_app():
                     with st.spinner("Downloading mp4..."):
                         video_byte = download_mp4(yt)
                         st.success("유튜브 동영상 추출 완료!")
-                        st.video(video_byte, format='video/mp4')
+                        st.session_state.video_byte = video_byte
+                        st.video(st.session_state.video_byte, format='video/mp4')
                         st.download_button(
                             label='📥 Download MP4 File 🎬', 
-                            data=video_byte, 
+                            data=st.session_state.video_byte, 
                             file_name=video_file_name, 
                             mime='video/mp4'
                         )
 
-            with con:
-                con.write("오디오(MP3) 내려받기")
-                # 2. MP3 내려받기
-                if st.button("🔊 오디오(MP3)"):
-                    with st.spinner("Downloading mp3..."):
-                        audio_file = download_mp3_from_mp4(yt, temp_dir, video_file_name, video_file_path, audio_file_path)
-                        st.audio(audio_file, format='audio/mp3')
-                        st.write("오디오 파일을 저장하려면 메뉴(⋮)를 누르고 '다운로드'를 선택하세요. 🔊")
-                        st.download_button(
-                            label='📥 Download MP3 File 🔊',
-                            data=audio_file,
-                            file_name=audio_file_name,
-                            mime='audio/mp3'
-                        )
+            if st.button("🔊 오디오(MP3)"):
+                with st.spinner("Downloading mp3..."):
+                    audio_file = download_mp3_from_mp4(yt, temp_dir, video_file_name, video_file_path, audio_file_path)
+                    st.session_state.audio_file = audio_file
+                    st.audio(st.session_state.audio_file, format='audio/mp3')
+                st.write("오디오 파일을 저장하려면 메뉴(⋮)를 누르고 '다운로드'를 선택하세요. 🔊")
+                st.download_button(
+                    label='📥 Download MP3 File 🔊',
+                    data=st.session_state.audio_file,
+                    file_name=audio_file_name,
+                    mime='audio/mp3'
+                )
 
-            with con:
-                con.write("스크립트(TXT) 내려받기")
-                # 3. 스크립트 내려받기
-                if st.button("📝 스크립트(TXT)"):
-                    temp_dir = create_temp_dir()
-                    video_id = yt.video_id
-                    transcript_list = get_transcript_list(video_id)
-                    all_file = extract_script_all(transcript_list, temp_dir, all_file_name)
-                    timeline_file = extract_script_timeline(transcript_list, temp_dir, timeline_file_name)
-                    with open(timeline_file, "r", encoding="utf-8") as f:
-                        timeline_data = f.read()
-                    st.write(timeline_data)
-                    with open(all_file, "r", encoding="utf-8") as f:
-                        all_data = f.read()
-                    col1, col2 = st.columns(2)
-                    with col1:
-                        st.download_button(
-                                label="📥 Download Timeline Script ⏱",
-                                data=timeline_data,
-                                file_name=timeline_file_name,
-                                mime='text/plain'
-                                )
-                    with col2:
-                        st.download_button(
-                                label="📥 Download Entire Script 📝",
-                                data=all_data,
-                                file_name=all_file_name,
-                                mime='text/plain'
-                                )
+            if st.button("📝 스크립트(TXT)"):
+                video_id = yt.video_id
+                transcript_list = get_transcript_list(video_id)
+                all_file = extract_script_all(transcript_list, temp_dir, all_file_name)
+                timeline_file = extract_script_timeline(transcript_list, temp_dir, timeline_file_name)
+                with open(timeline_file, "r", encoding="utf-8") as f:
+                    timeline_data = f.read()
+                    st.session_state.script_timeline = timeline_data
+                st.write(st.session_state.script_timeline)
+                with open(all_file, "r", encoding="utf-8") as f:
+                    all_data = f.read()
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.download_button(
+                        label="📥 Download Timeline Script ⏱",
+                        data=timeline_data,
+                        file_name=timeline_file_name,
+                        mime='text/plain'
+                    )
+                with col2:
+                    st.download_button(
+                        label="📥 Download Entire Script 📝",
+                        data=all_data,
+                        file_name=all_file_name,
+                        mime='text/plain'
+                    )
                                 
         else:
             st.error("올바른 유튜브 주소를 입력해주세요.")
