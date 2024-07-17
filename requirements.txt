@@ -1,4 +1,5 @@
 pytube
+pytubefix
 youtube-transcript-api
 streamlit
 requests
