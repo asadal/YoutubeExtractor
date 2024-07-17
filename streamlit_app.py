@@ -1,5 +1,6 @@
 from youtube_transcript_api import YouTubeTranscriptApi
-from pytube import YouTube
+# from pytube import YouTube
+from pytubefix import YouTube
 import streamlit as st
 import requests
 from datetime import datetime, timedelta
