@@ -9,7 +9,6 @@ import os
 import tempfile as tf
 import ssl
 import re
-import youtube_dl
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
@@ -53,16 +52,6 @@ def download_mp4(ytb):
     print("stream.url : ", stream.url)
     video_byte = requests.get(stream.url).content
     return video_byte
-
-# def download_mp4(ytb):
-#     ydl_opts = {
-#         'outtmpl': 'video.mp4',  # 다운로드된 파일명
-#         'merge_output_format': 'mp4',  # 다운로드 형식
-#     }
-
-#     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-#         ydl.download([ytb])
-
 
 # mp3 추출 함수
 def download_mp3_from_mp4(ytb, temp_dir, video_file_name, video_file_path, audio_file_path):
