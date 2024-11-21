@@ -32,7 +32,7 @@ def create_temp_dir():
     temp_dir = set_temp_dir.name + "/"
     # 디렉터리 접근 권한 설정
     os.chmod(temp_dir, 0o700)
-    return temp_dir
+    return set_temp_dir, temp_dir
 
 # 유튜브 video_id 추출
 def get_video_id(ytb):
@@ -183,7 +183,7 @@ def yt_app():
     if yt_url:
         if yt_url.startswith("https://www.youtube.com/") or yt_url.startswith("https://youtu.be/"):
             # 기본 변수 설정
-            temp_dir = create_temp_dir()
+            set_temp_dir, temp_dir = create_temp_dir()
             yt = YouTube(yt_url)
             title = yt.title
             video_file_name = f"{title}.mp4"
