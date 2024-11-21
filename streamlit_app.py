@@ -201,7 +201,7 @@ def yt_app():
         )
     with col2:
         if st.button("Reload ⟳"):
-            st.experimental_rerun()
+            st.rerun()
 
     # Main title and description
     st.title("유튜브 동영상 · 오디오 · 스크립트 추출기")
