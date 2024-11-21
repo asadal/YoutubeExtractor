@@ -78,7 +78,7 @@ def download_mp3(yt_url, temp_dir, audio_file_name):
         st.success("유튜브 오디오 추출 완료!")
         # 최종 생성된 오디오 파일 경로
         audio_file_path = os.path.join(temp_dir, audio_file_base + '.mp3')
-        st.write(f"생성된 오디오 파일 위치: {audio_file_path}")
+        print(f"생성된 오디오 파일 위치: {audio_file_path}")
         if not os.path.exists(audio_file_path):
             st.error(f"오디오 파일이 생성되지 않았습니다: {audio_file_path}")
             return None
